@@ -14,8 +14,11 @@ ACTION_VERBS = {
     "treated", "monitored", "consulted", "advised", "recruited", "scheduled",
 }
 
-# Numbers/percentages that are NOT years (e.g. 85%, 3x, 1,000+, 40 users)
-IMPACT_PATTERN = re.compile(r"\b\d+(?:[.,]\d+)?\s?(?:%|x\b|\+|k\b)|\b(?!19\d{2}\b|20\d{2}\b)\d{2,}(?:,\d{3})*\b")
+IMPACT_PATTERN = re.compile(
+    r"\b\d+(?:[.,]\d+)?\s?(?:%|x\b|\+|k\b|m\b)"
+    r"|(?<![/\-.])\b(?!19\d{2}\b|20\d{2}\b)\d{2,}(?:,\d{3})*\b(?!\s*[/\-.]\s*\d)",
+    re.I,
+)
 
 
 def score_resume(parsed, skills):

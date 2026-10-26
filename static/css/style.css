@@ -105,7 +105,7 @@ textarea:focus { outline: 2px solid var(--primary); border-color: transparent; }
 
 /* Features */
 .features {
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 16px; margin-top: 36px;
 }
 @media (max-width: 760px) { .features { grid-template-columns: repeat(2, 1fr); } }
@@ -173,7 +173,7 @@ footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 2
 
 /* Chips */
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip { padding: 6px 12px; border-radius: 999px; font-size: 0.85rem; font-weight: 500; border: 1px solid var(--border); }
+.chip { padding: 6px 12px; border-radius: 999px; font-size: 0.85rem; font-weight: 500; border: 1px solid var(--border); overflow-wrap: anywhere; }
 .chip.good { background: rgba(22, 163, 74, 0.12); color: var(--good); border-color: transparent; }
 .chip.bad { background: rgba(229, 72, 77, 0.12); color: var(--error); border-color: transparent; }
 .chip.neutral { background: var(--bg); }

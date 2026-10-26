@@ -46,6 +46,9 @@ def analyze():
         parsed = parse_resume(path)
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
+    except Exception:
+        # Corrupted or fake files (e.g. a renamed .txt) → clear message instead of a crash
+        return jsonify({"error": "Couldn't read this file. Make sure it's a valid PDF or DOCX."}), 400
     finally:
         # Privacy: delete the CV right after reading it
         if os.path.exists(path):
@@ -91,6 +94,10 @@ def analyze():
 @app.errorhandler(413)
 def too_large(e):
     return jsonify({"error": "File is too large (max 4MB)"}), 413
+
+@app.errorhandler(500)
+def server_error(e):
+    return jsonify({"error": "Something went wrong on our side. Please try again."}), 500
 
 
 if __name__ == "__main__":

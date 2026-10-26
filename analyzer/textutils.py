@@ -24,7 +24,7 @@ STOP_WORDS = {
     "use", "used", "using", "want", "way", "ways", "work", "works",
 }
 
-TOKEN_RE = re.compile(r"\b[a-zA-Z][a-zA-Z+#]+\b")
+TOKEN_RE = re.compile(r"(?<![A-Za-z0-9])[A-Za-z][A-Za-z+#]+(?![A-Za-z0-9])")
 
 
 def tokenize(text, stop_words=STOP_WORDS, min_len=2):

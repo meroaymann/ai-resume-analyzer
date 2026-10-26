@@ -1,15 +1,19 @@
 {
   "categories": {
     "Programming Languages": ["Python", "Java", "JavaScript", "TypeScript", "C++", "C#", "SQL", "R", "Go", "Kotlin", "Swift", "PHP", "Dart", "Bash", "MATLAB"],
-    "Data Science & ML": ["Machine Learning", "Deep Learning", "Data Analysis", "Data Visualization", "Statistics", "Feature Engineering", "Pandas", "NumPy", "Scikit-learn", "TensorFlow", "PyTorch", "Keras", "XGBoost", "Matplotlib", "Seaborn", "Plotly", "Jupyter", "Big Data", "Spark", "Hadoop", "Power BI", "Tableau", "Excel", "A/B Testing", "Time Series", "Predictive Modeling", "Explainable AI"],
+    "Data Science & ML": ["Machine Learning", "Deep Learning", "Data Analysis", "Data Visualization", "Statistics", "Feature Engineering", "Pandas", "NumPy", "Scikit-learn", "TensorFlow", "PyTorch", "Keras", "XGBoost", "Matplotlib", "Seaborn", "Plotly", "Jupyter", "Big Data", "Spark", "Hadoop", "Power BI", "Tableau", "A/B Testing", "Time Series", "Predictive Modeling", "Explainable AI"],
     "AI & NLP": ["Artificial Intelligence", "Natural Language Processing", "Computer Vision", "LLMs", "Generative AI", "LangChain", "LangGraph", "Hugging Face", "Transformers", "OpenCV", "spaCy", "NLTK", "RAG", "Prompt Engineering", "OpenAI API", "Reinforcement Learning"],
     "Web Development": ["HTML", "CSS", "React", "Angular", "Vue", "Node.js", "Express", "Flask", "Django", "FastAPI", "REST API", "Bootstrap", "Tailwind", "jQuery", "Streamlit", "Next.js"],
     "Databases": ["MySQL", "PostgreSQL", "MongoDB", "SQLite", "Redis", "Oracle", "Firebase", "NoSQL"],
     "Cloud & DevOps": ["AWS", "Azure", "Google Cloud", "Docker", "Kubernetes", "CI/CD", "Linux", "Git", "GitHub", "Vercel", "Heroku"],
-    "Cybersecurity": ["Cybersecurity", "Ethical Hacking", "Penetration Testing", "Application Security", "Network Security", "Digital Forensics", "Cryptography", "Vulnerability Assessment", "Wireshark", "Nmap", "Burp Suite", "Metasploit", "Kali Linux", "OWASP", "SIEM"],
+    "Cybersecurity": ["Cybersecurity", "Ethical Hacking", "Penetration Testing", "Application Security", "Network Security", "Digital Forensics", "Cryptography", "Vulnerability Assessment", "Wireshark", "Nmap", "Burp Suite", "Metasploit", "Kali Linux", "OWASP", "SIEM", "IDS/IPS", "WAF", "SOAR", "Firewalls", "Incident Response", "Risk Assessment", "Threat Intelligence", "Endpoint Security", "CompTIA Security+"],
+    "Networking": ["Networking", "TCP/IP", "DNS", "DHCP", "VPN", "VLAN", "Routing", "Switching", "CCNA", "Windows Server", "Active Directory"],
     "Software Engineering": ["Data Structures", "Algorithms", "OOP", "Software Engineering", "Agile", "Scrum", "Unit Testing", "System Design", "Microservices", "Mobile Development", "Android", "Flutter"],
-    "Soft Skills": ["Communication", "Teamwork", "Leadership", "Problem Solving", "Critical Thinking", "Time Management", "Adaptability", "Creativity", "Collaboration", "Presentation"],
+    "Soft Skills": ["Communication", "Teamwork", "Leadership", "Problem Solving", "Critical Thinking", "Time Management", "Adaptability", "Creativity", "Collaboration", "Presentation", "Multitasking", "Attention to Detail"],
     "Business & Management": ["Project Management", "Product Management", "Stakeholder Management", "Strategic Planning", "Business Analysis", "Operations Management", "Risk Management", "Negotiation", "Budgeting", "Jira", "Trello"],
+    "Office & Productivity": ["Microsoft Office", "Excel", "Microsoft Word", "PowerPoint", "Outlook", "Google Workspace", "Google Sheets", "Data Entry", "Typing"],
+    "Administration & Customer Service": ["Administrative Support", "Office Administration", "Customer Service", "Scheduling", "Document Management", "Record Keeping", "Report Preparation"],
+    "Education & Training": ["Teaching", "Lesson Planning", "Classroom Management", "Curriculum Development", "Tutoring", "Student Assessment", "E-learning"],
     "Finance & Accounting": ["Accounting", "Financial Analysis", "Financial Modeling", "Bookkeeping", "Auditing", "Taxation", "IFRS", "SAP", "QuickBooks", "Forecasting"],
     "Marketing & Sales": ["Digital Marketing", "SEO", "Content Marketing", "Social Media Marketing", "Google Analytics", "Email Marketing", "Copywriting", "CRM", "Salesforce", "Market Research"],
     "Design": ["Figma", "Adobe Photoshop", "Adobe Illustrator", "UI Design", "UX Design", "Wireframing", "Prototyping", "Canva"],
@@ -34,7 +38,15 @@
     "Team Work": "Teamwork",
     "RESTful API": "REST API",
     "RESTful APIs": "REST API",
-    "REST APIs": "REST API"
+    "REST APIs": "REST API",
+    "MS Word": "Microsoft Word",
+    "MS Excel": "Excel",
+    "MS Office": "Microsoft Office",
+    "MS PowerPoint": "PowerPoint",
+    "VPNs": "VPN",
+    "VLANs": "VLAN",
+    "Firewall": "Firewalls",
+    "Security+": "CompTIA Security+"
   },
   "implies": {
     "AWS": ["Cloud", "Cloud Computing"],
@@ -55,6 +67,7 @@
     "LangGraph": ["Generative AI", "LLMs"],
     "Scrum": ["Agile"],
     "MySQL": ["SQL"],
-    "PostgreSQL": ["SQL"]
+    "PostgreSQL": ["SQL"],
+    "CCNA": ["Networking", "Routing", "Switching"]
   }
 }

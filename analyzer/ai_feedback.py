@@ -48,6 +48,10 @@ def _str_list(value, limit):
         return []
     return [str(v).strip() for v in value if str(v).strip()][:limit]
 
+def _str(value):
+    """Text field from the AI — never shows 'None' if the AI returns null."""
+    return str(value).strip() if value is not None else ""
+
 def _roles(value):
     """Validates AI job suggestions so the frontend always gets a clean shape."""
     roles = []
@@ -56,14 +60,14 @@ def _roles(value):
     for r in value[:5]:
         if not isinstance(r, dict):
             continue
-        title = str(r.get("title", "")).strip()
+        title = _str(r.get("title"))                      # ← changed
         if not title or len(title) > 60:
             continue
         fit = str(r.get("fit", "Medium")).strip().title()
         roles.append({
             "title": title,
             "fit": fit if fit in ("High", "Medium") else "Medium",
-            "reason": str(r.get("reason", "")).strip(),
+            "reason": _str(r.get("reason")),               # ← changed
             "matching_skills": _str_list(r.get("matching_skills"), 5),
             "skills_to_learn": _str_list(r.get("skills_to_learn"), 3),
         })
@@ -100,6 +104,9 @@ def get_ai_feedback(resume_text, job_description="", rule_score=None, contact=No
         print(f"[AI] feedback failed, using rule-based only: {e}")
         return None
 
+    if not isinstance(data, dict):   # AI returned valid JSON but not an object → fall back safely
+        return None
+
     jd_skills = _str_list(data.get("jd_skills"), 40)
     jd_lower = {s.lower() for s in jd_skills}
     # Safety: matched skills must come from jd_skills (prevents inflating the match score)
@@ -109,10 +116,10 @@ def get_ai_feedback(resume_text, job_description="", rule_score=None, contact=No
         "skills": _str_list(data.get("skills"), 60),
         "jd_skills": jd_skills,
         "matched_jd_skills": matched,
-        "professional_summary": str(data.get("professional_summary", "")).strip(),
+        "professional_summary": _str(data.get("professional_summary")),
         "strengths": _str_list(data.get("strengths"), 5),
         "improvements": _str_list(data.get("improvements"), 7),
-        "overall_feedback": str(data.get("overall_feedback", "")).strip(),
+        "overall_feedback": _str(data.get("overall_feedback")),
         "jd_keywords": _str_list(data.get("jd_keywords"), 20),
         "suggested_roles": _roles(data.get("suggested_roles")),
     }

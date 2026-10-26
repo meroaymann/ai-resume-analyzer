@@ -20,10 +20,13 @@ def extract_text_from_docx(path):
     doc = Document(path)
     parts = []
 
-    # Page headers (many templates put name/email/phone here)
+    # Page headers and footers (many templates put name/email/phone here, sometimes inside tables)
     for section in doc.sections:
-        for p in section.header.paragraphs:
-            parts.append(p.text)
+        for part in (section.header, section.footer):
+            parts += [p.text for p in part.paragraphs]
+            for table in part.tables:
+                for row in table.rows:
+                    parts += [cell.text for cell in row.cells]
 
     parts += [p.text for p in doc.paragraphs]
     for table in doc.tables:
@@ -60,7 +63,7 @@ def extract_contact_info(text, links):
             break
 
     return {
-        "email": email.group() if email else None,
+        "email": email.group().rstrip(".") if email else None,
         "phone": phone,
         "linkedin": linkedin.group() if linkedin else None,
         "github": github.group() if github else None,

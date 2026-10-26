@@ -1,6 +1,6 @@
 import re
 from collections import Counter
-from analyzer.skills import extract_skills, _merge, implied_skills
+from analyzer.skills import extract_skills, _merge, implied_skills, _compile, CASE_SENSITIVE_SKILLS
 from analyzer.textutils import STOP_WORDS as BASE_STOP_WORDS, tokenize, tfidf_cosine
 
 # Common JD words that aren't real requirements
@@ -31,7 +31,7 @@ def _is_proper_noun(term, jd_text):
 
 def _in_resume(term, resume_lower):
     # Handle simple plurals: "stakeholders" matches "stakeholder", "opportunities" → "opportunity"
-    forms = {term, term.rstrip("s")}
+    forms = {term, term[:-1] if term.endswith("s") else term}   # remove ONE plural "s" only
     if term.endswith("ies"):
         forms.add(term[:-3] + "y")
     return any(re.search(r"(?<![a-z])" + re.escape(f), resume_lower) for f in forms if len(f) > 2)
@@ -57,11 +57,9 @@ def missing_keywords(resume_text, jd_text, top_n=15):
 def _resume_has(skill, resume_set, resume_text):
     if skill.lower() in resume_set:
         return True
-    # Short skills ("R", "Go") → case-sensitive, to avoid matching random letters/words
-    if len(skill) <= 2:
-        return re.search(r"(?<!\w)" + re.escape(skill) + r"(?!\w)", resume_text) is not None
-    # Longer skills → case-insensitive search in the full text (works for any skill)
-    return re.search(r"(?<!\w)" + re.escape(skill.lower()) + r"(?!\w)", resume_text.lower()) is not None
+    # Same whole-word rules as skills.py ("R" ≠ "R&D", "Excel" ≠ "I excel in...")
+    case_sensitive = len(skill) <= 2 or skill in CASE_SENSITIVE_SKILLS
+    return _compile(skill, case_sensitive).search(resume_text) is not None
 
 
 def match_job(resume_text, resume_skills, jd_text, extra_jd_skills=None, ai_matched=None, ai_keywords=None):

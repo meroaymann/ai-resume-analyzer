@@ -57,7 +57,7 @@ def ats_check(parsed, match=None):
         "No images — all content is plain text.",
         "Images or graphics detected. ATS can't read text inside images — keep key info as text.")
 
-    bullets = len(re.findall(r"^\s*[•\-▪●◦*]\s+", text, re.M))
+    bullets = len(re.findall(r"^\s*[•\-–▪●◦*➢►✓✔◆○➤■□]\s+", text, re.M))
     add("Bullet points", bullets >= 3, 10,
         "Uses bullet points — easy to scan and parse.",
         "Use bullet points for your experience and projects instead of long paragraphs.")

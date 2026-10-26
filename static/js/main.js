@@ -74,7 +74,7 @@ const form = $("analyzeForm");
 const submitBtn = $("submitBtn");
 
 const ALLOWED = ["pdf", "docx"];
-const MAX_SIZE = 4 * 1024 * 1024;
+const MAX_SIZE = 4 * 1024 * 1024;   // Vercel's request limit is 4.5MB
 
 function validateFile(file) {
   if (!file) return "Please upload your resume first.";
@@ -348,8 +348,16 @@ form.addEventListener("submit", async e => {
   setLoading(true);
 
   try {
-    const response = await fetch("/analyze", { method: "POST", body: new FormData(form) });
-    const data = await response.json().catch(() => ({ error: "Unexpected server response." }));
+    // Network errors are caught right at the fetch, so rendering bugs never look like "no internet"
+    const response = await fetch("/analyze", { method: "POST", body: new FormData(form) })
+      .catch(() => { throw new Error("Network error — check your connection and try again."); });
+
+    const data = await response.json().catch(() => ({
+      error: response.status === 504
+        ? "The analysis took too long. Please try again."
+        : "Unexpected server response. Please try again.",
+    }));
+
     if (!response.ok || data.error) throw new Error(data.error || "Something went wrong.");
     showResults(data);
   } catch (err) {

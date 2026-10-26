@@ -14,13 +14,18 @@ def _compile(term, case_sensitive):
     return re.compile(pattern, 0 if case_sensitive else re.IGNORECASE)
 
 
+# Tool names that are also common English words ("I excel in...", "express interest", "swift delivery")
+# → only match when written with a capital letter, like the real tool name
+CASE_SENSITIVE_SKILLS = {"Excel", "Express", "Swift", "Spark", "Oracle", "Dart"}
+
 SKILL_CATEGORY = {}
 PATTERNS = []   # (compiled regex, canonical skill name)
 
 for category, skills in SKILLS_DB["categories"].items():
     for skill in skills:
         SKILL_CATEGORY[skill] = category
-        PATTERNS.append((_compile(skill, case_sensitive=len(skill) <= 2), skill))
+        case_sensitive = len(skill) <= 2 or skill in CASE_SENSITIVE_SKILLS
+        PATTERNS.append((_compile(skill, case_sensitive), skill))
 
 for alias, skill in SKILLS_DB["aliases"].items():
     SKILL_CATEGORY.setdefault(skill, "Other")
@@ -107,6 +112,8 @@ def _merge(*skill_lists):
                     or key in GENERIC_SKILL_WORDS):
                 continue
             canon = CANONICAL.get(key, s)
+            if canon.islower():                      # "firewalls" → "Firewalls"
+                canon = canon[0].upper() + canon[1:]
             merged.setdefault(canon.lower(), canon)   # key by normalized name → no duplicates
     return sorted(merged.values(), key=str.lower)
 
@@ -123,12 +130,12 @@ def merge_skills(skills_result, extra_skills):
 
 
 IMPLIES = SKILLS_DB.get("implies", {})
+IMPLIES_LOWER = {k.lower(): v for k, v in IMPLIES.items()}
 
 
 def implied_skills(skills):
     """Skills implied by others: AWS → Cloud, LLMs → Generative AI (used in job matching)."""
-    lower_map = {k.lower(): v for k, v in IMPLIES.items()}
     implied = set()
     for s in skills:
-        implied.update(i.lower() for i in lower_map.get(s.lower(), []))
+        implied.update(i.lower() for i in IMPLIES_LOWER.get(s.lower(), []))
     return implied
