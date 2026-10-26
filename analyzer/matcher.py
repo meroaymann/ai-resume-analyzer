@@ -1,7 +1,7 @@
 import re
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer, ENGLISH_STOP_WORDS
-from sklearn.metrics.pairwise import cosine_similarity
+from collections import Counter
 from analyzer.skills import extract_skills, _merge, implied_skills
+from analyzer.textutils import STOP_WORDS as BASE_STOP_WORDS, tokenize, tfidf_cosine
 
 # Common JD words that aren't real requirements
 GENERIC_WORDS = {
@@ -16,13 +16,11 @@ GENERIC_WORDS = {
     "passionate", "curious", "world", "best", "support", "ensure", "shape", "magic",
     "humble", "belong", "belongs", "contributes", "collective", "thrive", "thrives",
 }
-STOP_WORDS = list(ENGLISH_STOP_WORDS.union(GENERIC_WORDS))
+STOP_WORDS = BASE_STOP_WORDS | GENERIC_WORDS
 
 
 def text_similarity(resume_text, jd_text):
-    vec = TfidfVectorizer(stop_words="english")
-    tfidf = vec.fit_transform([resume_text, jd_text])
-    return float(cosine_similarity(tfidf[0], tfidf[1])[0][0])
+    return tfidf_cosine(resume_text, jd_text)
 
 
 def _is_proper_noun(term, jd_text):
@@ -40,9 +38,8 @@ def _in_resume(term, resume_lower):
 
 
 def missing_keywords(resume_text, jd_text, top_n=15):
-    vec = CountVectorizer(stop_words=STOP_WORDS, token_pattern=r"(?u)\b[a-zA-Z][a-zA-Z+#]{2,}\b")
-    counts = vec.fit_transform([jd_text]).toarray()[0]
-    ranked = sorted(zip(vec.get_feature_names_out(), counts), key=lambda x: -x[1])
+    counts = Counter(tokenize(jd_text, stop_words=STOP_WORDS, min_len=3))
+    ranked = counts.most_common()
 
     resume_lower = resume_text.lower()
     missing = []

@@ -74,13 +74,13 @@ const form = $("analyzeForm");
 const submitBtn = $("submitBtn");
 
 const ALLOWED = ["pdf", "docx"];
-const MAX_SIZE = 5 * 1024 * 1024;
+const MAX_SIZE = 4 * 1024 * 1024;
 
 function validateFile(file) {
   if (!file) return "Please upload your resume first.";
   const ext = file.name.split(".").pop().toLowerCase();
   if (!ALLOWED.includes(ext)) return "Only PDF or DOCX files are allowed.";
-  if (file.size > MAX_SIZE) return "File is too large (max 5MB).";
+  if (file.size > MAX_SIZE) return "File is too large (max 4MB).";
   return "";
 }
 

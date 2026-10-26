@@ -1,5 +1,6 @@
 import os
 import uuid
+import tempfile
 from flask import Flask, render_template, request, jsonify
 from werkzeug.utils import secure_filename
 from analyzer.parser import parse_resume
@@ -9,9 +10,10 @@ from analyzer.matcher import match_job
 from analyzer.ai_feedback import get_ai_feedback
 from analyzer.ats import ats_check
 
+
 app = Flask(__name__)
-app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # 5MB
-UPLOAD_FOLDER = os.path.join(app.root_path, "uploads")
+app.config["MAX_CONTENT_LENGTH"] = 4 * 1024 * 1024  # 4MB (Vercel's request limit is 4.5MB)
+UPLOAD_FOLDER = os.path.join(tempfile.gettempdir(), "resumeiq_uploads")   # /tmp on Vercel
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 ALLOWED_EXTENSIONS = {"pdf", "docx"}
 
@@ -88,7 +90,7 @@ def analyze():
 
 @app.errorhandler(413)
 def too_large(e):
-    return jsonify({"error": "File is too large (max 5MB)"}), 413
+    return jsonify({"error": "File is too large (max 4MB)"}), 413
 
 
 if __name__ == "__main__":

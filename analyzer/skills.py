@@ -1,28 +1,30 @@
 import json
 import os
 import re
-import spacy
-from spacy.matcher import PhraseMatcher
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 with open(os.path.join(BASE_DIR, "data", "skills.json"), encoding="utf-8") as f:
     SKILLS_DB = json.load(f)
 
-nlp = spacy.blank("en")
-matcher_lower = PhraseMatcher(nlp.vocab, attr="LOWER")
-matcher_exact = PhraseMatcher(nlp.vocab, attr="ORTH")
+
+def _compile(term, case_sensitive):
+    """Whole-word match: 'Java' won't match inside 'JavaScript', 'R' won't match 'R&D'."""
+    body = r"\s+".join(re.escape(part) for part in term.split())
+    pattern = r"(?<![\w+#&])" + body + r"(?![\w+#&])"
+    return re.compile(pattern, 0 if case_sensitive else re.IGNORECASE)
+
 
 SKILL_CATEGORY = {}
+PATTERNS = []   # (compiled regex, canonical skill name)
+
 for category, skills in SKILLS_DB["categories"].items():
     for skill in skills:
         SKILL_CATEGORY[skill] = category
-        matcher = matcher_exact if len(skill) <= 2 else matcher_lower
-        matcher.add(skill, [nlp.make_doc(skill)])
+        PATTERNS.append((_compile(skill, case_sensitive=len(skill) <= 2), skill))
 
 for alias, skill in SKILLS_DB["aliases"].items():
     SKILL_CATEGORY.setdefault(skill, "Other")
-    matcher = matcher_exact if len(alias) <= 3 else matcher_lower
-    matcher.add(skill, [nlp.make_doc(alias)])
+    PATTERNS.append((_compile(alias, case_sensitive=len(alias) <= 3), skill))
 
 # Lookup to normalize names: "sklearn" -> "Scikit-learn", "python" -> "Python"
 CANONICAL = {s.lower(): s for s in SKILL_CATEGORY}
@@ -31,9 +33,7 @@ CANONICAL.update({a.lower(): s for a, s in SKILLS_DB["aliases"].items()})
 
 # ---------- Layer 1: dictionary ----------
 def _dictionary_skills(text):
-    doc = nlp.make_doc(text)
-    matches = matcher_lower(doc) + matcher_exact(doc)
-    return {nlp.vocab.strings[mid] for mid, _, _ in matches}
+    return {skill for pattern, skill in PATTERNS if pattern.search(text)}
 
 
 # ---------- Layer 2: skills section parser ----------
@@ -45,11 +45,11 @@ SPOKEN_LANGUAGES = {
     "arabic", "english", "german", "french", "spanish", "italian", "chinese", "japanese",
     "korean", "turkish", "russian", "portuguese", "hindi", "dutch",
 }
-
 GENERIC_SKILL_WORDS = {
     "report", "preparation", "management", "skills", "tools", "work", "experience",
     "knowledge", "basic", "good", "other", "various", "general",
 }
+
 
 def _section_skills(section_text):
     found = {}
@@ -92,6 +92,7 @@ def _build_result(all_skills):
         "new_skills": [s for s in all_skills if s not in SKILL_CATEGORY],
     }
 
+
 def _merge(*skill_lists):
     merged = {}
     for skills in skill_lists:
@@ -130,4 +131,4 @@ def implied_skills(skills):
     implied = set()
     for s in skills:
         implied.update(i.lower() for i in lower_map.get(s.lower(), []))
-    return implied    
+    return implied
