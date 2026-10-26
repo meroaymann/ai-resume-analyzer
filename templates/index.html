@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResumeIQ – AI Resume Analyzer</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo">📄 Resume<span>IQ</span></div>
+    <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+  </nav>
+
+  <header class="hero">
+    <span class="badge">AI-Powered Resume Analysis</span>
+    <h1>Get your resume <span class="gradient">job-ready</span> in seconds</h1>
+    <p>Upload your CV, paste a job description, and get a score, missing skills, and clear tips to improve.</p>
+  </header>
+
+  <main class="container">
+    <form id="analyzeForm" class="card" action="/analyze" method="POST" enctype="multipart/form-data">
+
+      <label for="resume" id="dropZone" class="drop-zone">
+        <div class="drop-icon">⬆️</div>
+        <p class="drop-title">Drag & drop your resume here</p>
+        <p class="drop-sub">or click to browse — PDF or DOCX, max 5MB</p>
+        <p id="fileName" class="file-name"></p>
+        <input type="file" id="resume" name="resume" accept=".pdf,.docx" hidden>
+      </label>
+
+      <div class="field">
+        <label for="job_description">Job Description <span class="optional">(optional)</span></label>
+        <textarea id="job_description" name="job_description" rows="7"
+          placeholder="Paste the job description here to see how well your resume matches..."></textarea>
+      </div>
+
+      <p id="errorMsg" class="error"></p>
+      <button type="submit" id="submitBtn" class="btn-primary">Analyze My Resume</button>
+    </form>
+
+    <section class="features">
+      <div class="feature"><div class="f-icon">📊</div><h3>Resume Score</h3><p>Overall score based on structure, keywords and impact.</p></div>
+      <div class="feature"><div class="f-icon">🧠</div><h3>Skills Extraction</h3><p>Detects your technical and soft skills automatically.</p></div>
+      <div class="feature"><div class="f-icon">🎯</div><h3>Job Match</h3><p>Compares your resume with the job description.</p></div>
+      <div class="feature"><div class="f-icon">✨</div><h3>AI Feedback</h3><p>Clear, practical tips to improve your resume.</p></div>
+    </section>
+  </main>
+
+  <footer>Built with Flask & NLP · Sqrock IT Solutions Internship</footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
