@@ -43,8 +43,6 @@ Rules:
 - suggested_roles must match the candidate's real background and level (entry-level vs senior), even if the job description is for a different field.
 - Write in clear, simple English."""
 
-
-
 def _str_list(value, limit):
     if not isinstance(value, list):
         return []

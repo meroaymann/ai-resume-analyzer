@@ -85,7 +85,6 @@ def analyze():
         "ats": ats,
     })
 
-
 @app.errorhandler(413)
 def too_large(e):
     return jsonify({"error": "File is too large (max 5MB)"}), 413
