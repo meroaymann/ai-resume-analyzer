@@ -15,15 +15,15 @@
     <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">🌙</button>
   </nav>
 
-  <header class="hero">
+  <header class="hero" id="hero">
     <span class="badge">AI-Powered Resume Analysis</span>
     <h1>Get your resume <span class="gradient">job-ready</span> in seconds</h1>
     <p>Upload your CV, paste a job description, and get a score, missing skills, and clear tips to improve.</p>
   </header>
 
   <main class="container">
+    <!-- ===== Upload form ===== -->
     <form id="analyzeForm" class="card" action="/analyze" method="POST" enctype="multipart/form-data">
-
       <label for="resume" id="dropZone" class="drop-zone">
         <div class="drop-icon">⬆️</div>
         <p class="drop-title">Drag & drop your resume here</p>
@@ -42,15 +42,82 @@
       <button type="submit" id="submitBtn" class="btn-primary">Analyze My Resume</button>
     </form>
 
-    <section class="features">
+    <section class="features" id="features">
       <div class="feature"><div class="f-icon">📊</div><h3>Resume Score</h3><p>Overall score based on structure, keywords and impact.</p></div>
       <div class="feature"><div class="f-icon">🧠</div><h3>Skills Extraction</h3><p>Detects your technical and soft skills automatically.</p></div>
       <div class="feature"><div class="f-icon">🎯</div><h3>Job Match</h3><p>Compares your resume with the job description.</p></div>
       <div class="feature"><div class="f-icon">✨</div><h3>AI Feedback</h3><p>Clear, practical tips to improve your resume.</p></div>
     </section>
+
+    <!-- ===== Results dashboard ===== -->
+    <section id="results" class="results hidden" aria-live="polite">
+      <div class="results-header">
+        <h2>Your Resume Analysis</h2>
+        <button id="newAnalysis" class="btn-secondary">↺ Analyze another resume</button>
+      </div>
+
+      <p id="aiNotice" class="notice hidden">⚠️ AI feedback is unavailable right now — showing the rule-based analysis.</p>
+
+      <div class="grid-2">
+        <div class="card score-card">
+          <div class="gauge" id="scoreGauge">
+            <div class="gauge-inner"><span id="scoreValue">0</span><small>/100</small></div>
+          </div>
+          <p id="scoreGrade" class="grade"></p>
+          <p class="muted">Resume Score</p>
+        </div>
+        <div class="card">
+          <h3>📊 Score Breakdown</h3>
+          <div id="breakdown"></div>
+        </div>
+      </div>
+
+      <div class="card hidden" id="matchCard">
+        <div class="match-head">
+          <h3>🎯 Job Match</h3>
+          <span id="matchScore" class="pill">0%</span>
+        </div>
+        <div class="progress"><div id="matchBar" class="bar-fill"></div></div>
+        <h4>✅ Matched skills</h4><div id="matchedSkills" class="chips"></div>
+        <h4>❌ Missing skills</h4><div id="missingSkills" class="chips"></div>
+        <h4>🔑 Missing keywords</h4><div id="missingKeywords" class="chips"></div>
+      </div>
+
+      <div class="card hidden" id="aiCard">
+        <h3>✨ AI Feedback</h3>
+        <p id="overallFeedback"></p>
+        <div class="summary-box">
+          <div class="summary-head">
+            <h4>Suggested Professional Summary</h4>
+            <button id="copySummary" class="btn-small" type="button">📋 Copy</button>
+          </div>
+          <p id="proSummary"></p>
+        </div>
+        <div class="grid-2 even">
+          <div><h4>💪 Strengths</h4><ul id="strengths" class="list good"></ul></div>
+          <div><h4>🛠️ Improvements</h4><ul id="improvements" class="list warn"></ul></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🧠 Skills <span id="skillCount" class="pill">0</span></h3>
+        <div id="skillsByCategory"></div>
+      </div>
+
+      <div class="card">
+        <h3>📌 Quick Tips</h3>
+        <ul id="tips" class="list warn"></ul>
+      </div>
+    </section>
   </main>
 
   <footer>Built with Flask & NLP · Sqrock IT Solutions Internship</footer>
+
+  <!-- ===== Loading overlay ===== -->
+  <div id="loader" class="loader hidden">
+    <div class="spinner"></div>
+    <p id="loaderText">📄 Reading your resume...</p>
+  </div>
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>

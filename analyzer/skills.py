@@ -72,7 +72,8 @@ def _section_skills(section_text):
                 if (not (1 <= len(words) <= 4) or too_short or part.isdigit()
                         or p_key in PROFICIENCY_WORDS or p_key in SPOKEN_LANGUAGES):
                     continue
-                found.setdefault(p_key, CANONICAL.get(p_key, part))
+                canon = CANONICAL.get(p_key, part)
+                found.setdefault(canon.lower(), canon)
     return set(found.values())
 
 
@@ -99,7 +100,8 @@ def _merge(*skill_lists):
             if (not s or too_short or len(s) > 40 or len(s.split()) > 5
                     or key in SPOKEN_LANGUAGES or key in PROFICIENCY_WORDS):
                 continue
-            merged.setdefault(key, CANONICAL.get(key, s))
+            canon = CANONICAL.get(key, s)
+            merged.setdefault(canon.lower(), canon)   # key by normalized name → no duplicates
     return sorted(merged.values(), key=str.lower)
 
 
