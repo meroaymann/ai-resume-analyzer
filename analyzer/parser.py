@@ -105,6 +105,24 @@ def detect_sections(text):
     return {name: content.strip() for name, content in sections.items()}
 
 
+def get_layout_info(path, ext):
+    """Detects tables and images — things that often confuse ATS systems."""
+    info = {"tables": 0, "images": 0}
+    try:
+        if ext == "pdf":
+            with pdfplumber.open(path) as pdf:
+                for page in pdf.pages:
+                    info["images"] += len(page.images)
+                    info["tables"] += len(page.find_tables())
+        else:
+            doc = Document(path)
+            info["tables"] = len(doc.tables)
+            info["images"] = len(doc.inline_shapes)
+    except Exception:
+        pass  # layout info is a bonus — never break the analysis
+    return info
+
+
 def parse_resume(path):
     ext = path.rsplit(".", 1)[-1].lower()
     if ext == "pdf":
@@ -127,4 +145,7 @@ def parse_resume(path):
         "word_count": len(text.split()),
         "contact": extract_contact_info(text, links),
         "sections": detect_sections(text),
+        "file_type": ext,
+        "icon_artifacts": len(re.findall(r"\(cid:\d+\)", raw)),   # counted BEFORE cleaning
+        "layout": get_layout_info(path, ext),
     }

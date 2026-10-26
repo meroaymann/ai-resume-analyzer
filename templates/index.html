@@ -53,8 +53,12 @@
     <section id="results" class="results hidden" aria-live="polite">
       <div class="results-header">
         <h2>Your Resume Analysis</h2>
-        <button id="newAnalysis" class="btn-secondary">↺ Analyze another resume</button>
+        <div class="header-actions">
+          <button id="downloadReport" class="btn-secondary" type="button">📄 Download Report</button>
+          <button id="newAnalysis" class="btn-secondary" type="button">↺ Analyze another resume</button>
+        </div>
       </div>
+      <p id="reportMeta" class="print-only report-meta"></p>
 
       <p id="aiNotice" class="notice hidden">⚠️ AI feedback is unavailable right now — showing the rule-based analysis.</p>
 
@@ -70,6 +74,15 @@
           <h3>📊 Score Breakdown</h3>
           <div id="breakdown"></div>
         </div>
+      </div>
+
+      <div class="card" id="atsCard">
+        <div class="match-head">
+          <h3>🤖 ATS Compatibility</h3>
+          <span id="atsScore" class="pill">0%</span>
+        </div>
+        <div class="progress"><div id="atsBar" class="bar-fill"></div></div>
+        <ul id="atsChecks" class="ats-list"></ul>
       </div>
 
       <div class="card hidden" id="matchCard">

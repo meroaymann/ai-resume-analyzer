@@ -46,6 +46,10 @@ SPOKEN_LANGUAGES = {
     "korean", "turkish", "russian", "portuguese", "hindi", "dutch",
 }
 
+GENERIC_SKILL_WORDS = {
+    "report", "preparation", "management", "skills", "tools", "work", "experience",
+    "knowledge", "basic", "good", "other", "various", "general",
+}
 
 def _section_skills(section_text):
     found = {}
@@ -94,11 +98,12 @@ def _merge(*skill_lists):
         for s in skills or []:
             if not isinstance(s, str):
                 continue
-            s = s.strip()
+            s = re.sub(r"\s*\(.*?\)\s*", " ", s).strip()   # "Arabic (Native)" → "Arabic"
             key = s.lower()
             too_short = len(s) < 2 and key not in CANONICAL   # keeps "R"
             if (not s or too_short or len(s) > 40 or len(s.split()) > 5
-                    or key in SPOKEN_LANGUAGES or key in PROFICIENCY_WORDS):
+                    or key in SPOKEN_LANGUAGES or key in PROFICIENCY_WORDS
+                    or key in GENERIC_SKILL_WORDS):
                 continue
             canon = CANONICAL.get(key, s)
             merged.setdefault(canon.lower(), canon)   # key by normalized name → no duplicates

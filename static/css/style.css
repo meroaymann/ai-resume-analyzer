@@ -212,3 +212,37 @@ footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 2
   animation: spin 0.9s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===================== ATS + Report ===================== */
+.header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.ats-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.ats-list li {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 14px; border-radius: 12px; background: var(--bg);
+  border-left: 3px solid var(--good);
+}
+.ats-list li.fail { border-left-color: var(--warn); }
+.ats-list strong { font-size: 0.95rem; }
+.ats-list p { margin-top: 2px; }
+.ats-icon { font-size: 1.1rem; line-height: 1.4; }
+
+.print-only { display: none; }
+.report-meta { color: var(--muted); font-weight: 600; }
+
+/* Print = clean light report, whatever theme is active */
+@media print {
+  :root, [data-theme="dark"] {
+    --bg: #f6f7fb; --card: #ffffff; --text: #1a1d29; --muted: #6b7085;
+    --border: #e3e5ee; --good: #16a34a; --warn: #d97706; --shadow: none;
+  }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: #fff; }
+  .navbar, footer, .header-actions, #copySummary, .loader, .notice { display: none !important; }
+  .print-only { display: block; }
+  .container { max-width: 100%; padding: 0; }
+  .card { box-shadow: none; }
+  .results { gap: 14px; }
+  .list li, .ats-list li, .bar-row, .chip, .score-card { break-inside: avoid; }
+  .bar-fill, .gauge { transition: none; }
+}

@@ -7,6 +7,7 @@ from analyzer.skills import extract_skills, merge_skills
 from analyzer.scorer import score_resume
 from analyzer.matcher import match_job
 from analyzer.ai_feedback import get_ai_feedback
+from analyzer.ats import ats_check
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # 5MB
@@ -66,6 +67,8 @@ def analyze():
             ai_keywords=ai["jd_keywords"] if ai else None,
         )
 
+    ats = ats_check(parsed, match)
+
     return jsonify({
         "contact": parsed["contact"],
         "word_count": parsed["word_count"],
@@ -75,6 +78,7 @@ def analyze():
         "match": match,
         "ai_used": ai is not None,
         "ai": ai,
+        "ats": ats,
     })
 
 

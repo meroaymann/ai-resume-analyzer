@@ -178,6 +178,29 @@ function renderMatch(match) {
   fillChips($("missingKeywords"), match.missing_keywords, "neutral", "No important keywords missing.");
 }
 
+// ===== Render: ATS =====
+function renderATS(ats) {
+  if (!ats) return;
+  animateNumber($("atsScore"), ats.score, "%");
+  $("atsScore").style.background = scoreColor(ats.score);
+
+  const bar = $("atsBar");
+  bar.style.width = "0";
+  bar.style.background = scoreColor(ats.score);
+  setTimeout(() => (bar.style.width = ats.score + "%"), 60);
+
+  const list = $("atsChecks");
+  list.replaceChildren();
+  ats.checks.forEach(check => {
+    const li = el("li", check.passed ? "pass" : "fail");
+    li.appendChild(el("span", "ats-icon", check.passed ? "✅" : "⚠️"));
+    const body = el("div");
+    body.append(el("strong", null, check.label), el("p", "muted small", check.message));
+    li.appendChild(body);
+    list.appendChild(li);
+  });
+}
+
 // ===== Render: skills =====
 function renderSkills(skills) {
   $("skillCount").textContent = skills.count;
@@ -221,6 +244,7 @@ const results = $("results");
 function showResults(data) {
   renderScore(data.score);
   renderMatch(data.match);
+  renderATS(data.ats);
   renderSkills(data.skills);
   renderAI(data.ai, data.ai_used);
   renderTips(data.score.tips);
@@ -271,4 +295,10 @@ form.addEventListener("submit", async e => {
   } finally {
     setLoading(false);
   }
+});
+
+// ===== Download PDF report (browser "Save as PDF") =====
+$("downloadReport").addEventListener("click", () => {
+  $("reportMeta").textContent = `ResumeIQ Report · Generated ${new Date().toLocaleString()}`;
+  window.print();
 });
