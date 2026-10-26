@@ -12,6 +12,7 @@ from analyzer.ats import ats_check
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024  # 5MB
 UPLOAD_FOLDER = os.path.join(app.root_path, "uploads")
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 ALLOWED_EXTENSIONS = {"pdf", "docx"}
 
 
@@ -91,4 +92,4 @@ def too_large(e):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=os.getenv("FLASK_DEBUG") == "1")
