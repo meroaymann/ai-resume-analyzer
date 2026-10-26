@@ -201,6 +201,67 @@ function renderATS(ats) {
   });
 }
 
+// ===== Render: recommended roles =====
+const JOB_SITES = [
+  ["LinkedIn", t => `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(t)}`],
+  ["Indeed", t => `https://www.indeed.com/jobs?q=${encodeURIComponent(t)}`],
+  ["Google Jobs", t => `https://www.google.com/search?q=${encodeURIComponent(t + " jobs")}`],
+];
+
+function renderRoles(ai, match) {
+  const card = $("rolesCard");
+  const roles = (ai && ai.suggested_roles) || [];
+  if (!roles.length) {
+    card.classList.add("hidden");
+    return;
+  }
+  card.classList.remove("hidden");
+
+  // Low match → show roles ABOVE the job match card with a helpful message
+  const lowMatch = Boolean(match) && match.match_score < 40;
+  $("rolesNotice").classList.toggle("hidden", !lowMatch);
+  if (lowMatch) $("matchCard").before(card);
+  else $("matchCard").after(card);
+
+  const list = $("rolesList");
+  list.replaceChildren();
+  roles.forEach(role => {
+    const item = el("div", "role-card");
+
+    const head = el("div", "role-head");
+    head.append(
+      el("h4", null, role.title),
+      el("span", `fit-badge ${role.fit === "High" ? "high" : "medium"}`, `${role.fit} fit`)
+    );
+    item.appendChild(head);
+    if (role.reason) item.appendChild(el("p", "muted small", role.reason));
+
+    if (role.matching_skills.length) {
+      item.appendChild(el("p", "role-label", "✅ Your matching skills"));
+      const chips = el("div", "chips");
+      fillChips(chips, role.matching_skills, "good");
+      item.appendChild(chips);
+    }
+    if (role.skills_to_learn.length) {
+      item.appendChild(el("p", "role-label", "📚 Skills to learn"));
+      const chips = el("div", "chips");
+      fillChips(chips, role.skills_to_learn, "neutral");
+      item.appendChild(chips);
+    }
+
+    const links = el("div", "role-links");
+    JOB_SITES.forEach(([name, buildUrl]) => {
+      const a = el("a", "btn-small", name);
+      a.href = buildUrl(role.title);
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      links.appendChild(a);
+    });
+    item.appendChild(links);
+    list.appendChild(item);
+  });
+}
+
 // ===== Render: skills =====
 function renderSkills(skills) {
   $("skillCount").textContent = skills.count;
@@ -245,6 +306,7 @@ function showResults(data) {
   renderScore(data.score);
   renderMatch(data.match);
   renderATS(data.ats);
+  renderRoles(data.ai, data.match);
   renderSkills(data.skills);
   renderAI(data.ai, data.ai_used);
   renderTips(data.score.tips);

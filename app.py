@@ -57,7 +57,11 @@ def analyze():
     if ai:
         skills = merge_skills(skills, ai["skills"])
     score = score_resume(parsed, skills)
-
+    # Never suggest "learning" a skill the candidate already has
+    if ai:
+        have = {s.lower() for s in skills["all"]}
+        for role in ai["suggested_roles"]:
+            role["skills_to_learn"] = [s for s in role["skills_to_learn"] if s.lower() not in have]
     match = None
     if job_description:
         match = match_job(

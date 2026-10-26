@@ -230,6 +230,23 @@ footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 2
 .print-only { display: none; }
 .report-meta { color: var(--muted); font-weight: 600; }
 
+/* ===================== Recommended roles ===================== */
+#rolesNotice { margin-bottom: 14px; }
+.roles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 760px) { .roles-grid { grid-template-columns: 1fr; } }
+.role-card {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+  padding: 16px; display: flex; flex-direction: column; gap: 6px;
+}
+.role-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.role-head h4 { margin: 0; font-size: 1rem; }
+.fit-badge { font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+.fit-badge.high { background: rgba(22, 163, 74, 0.15); color: var(--good); }
+.fit-badge.medium { background: rgba(245, 158, 11, 0.15); color: var(--warn); }
+.role-label { font-size: 0.85rem; font-weight: 600; margin-top: 6px; }
+.role-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; padding-top: 10px; }
+.role-links a { text-decoration: none; }
+
 /* Print = clean light report, whatever theme is active */
 @media print {
   :root, [data-theme="dark"] {
@@ -245,4 +262,6 @@ footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 2
   .results { gap: 14px; }
   .list li, .ats-list li, .bar-row, .chip, .score-card { break-inside: avoid; }
   .bar-fill, .gauge { transition: none; }
+  .role-links { display: none; }
 }
+

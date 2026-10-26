@@ -28,7 +28,8 @@ Analyze the resume (and the job description if provided) and return ONLY valid J
   "professional_summary": "a 3-4 sentence professional summary the candidate could put at the top of their resume",
   "strengths": [3-5 specific strengths of this resume],
   "improvements": [4-7 specific, actionable improvements, referring to real content in the resume],
-  "overall_feedback": "2-3 sentences of honest overall feedback"
+  "overall_feedback": "2-3 sentences of honest overall feedback",
+  "suggested_roles": [3-5 job titles that genuinely fit this resume, regardless of the job description. Each item: {"title": "job title", "fit": "High" or "Medium", "reason": "1 short sentence why it fits", "matching_skills": [up to 5 skills from the resume], "skills_to_learn": [up to 3 skills that would make the candidate stronger for this role]}]
 }
 
 Rules:
@@ -39,6 +40,7 @@ Rules:
 - The professional_summary must ONLY use facts that appear in the resume.
 - "skills" must only include skills clearly supported by the resume text.
 - Be specific to THIS resume, not generic advice.
+- suggested_roles must match the candidate's real background and level (entry-level vs senior), even if the job description is for a different field.
 - Write in clear, simple English."""
 
 
@@ -48,6 +50,26 @@ def _str_list(value, limit):
         return []
     return [str(v).strip() for v in value if str(v).strip()][:limit]
 
+def _roles(value):
+    """Validates AI job suggestions so the frontend always gets a clean shape."""
+    roles = []
+    if not isinstance(value, list):
+        return roles
+    for r in value[:5]:
+        if not isinstance(r, dict):
+            continue
+        title = str(r.get("title", "")).strip()
+        if not title or len(title) > 60:
+            continue
+        fit = str(r.get("fit", "Medium")).strip().title()
+        roles.append({
+            "title": title,
+            "fit": fit if fit in ("High", "Medium") else "Medium",
+            "reason": str(r.get("reason", "")).strip(),
+            "matching_skills": _str_list(r.get("matching_skills"), 5),
+            "skills_to_learn": _str_list(r.get("skills_to_learn"), 3),
+        })
+    return roles
 
 def get_ai_feedback(resume_text, job_description="", rule_score=None, contact=None):
     """Returns a dict with AI feedback, or None if the AI is unavailable (app falls back to rule-based)."""
@@ -94,4 +116,5 @@ def get_ai_feedback(resume_text, job_description="", rule_score=None, contact=No
         "improvements": _str_list(data.get("improvements"), 7),
         "overall_feedback": str(data.get("overall_feedback", "")).strip(),
         "jd_keywords": _str_list(data.get("jd_keywords"), 20),
+        "suggested_roles": _roles(data.get("suggested_roles")),
     }
